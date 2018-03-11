@@ -5,10 +5,12 @@ import { MDBBootstrapModules } from 'ng-mdb-pro';
 import { MDBSpinningPreloader } from 'ng-mdb-pro';
 
 import { AppComponent } from './app.component';
+import { RegisteryComponent } from './registery/registery.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    RegisteryComponent
   ],
   imports: [
     BrowserModule,
