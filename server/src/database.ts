@@ -31,7 +31,7 @@ export class Database {
 
     private connectToDatabase(): Promise<void> {
         return new Promise((resolve, reject) => {
-            MongoClient.connect(`mongodb://${CONFIG.DATABASE_USER}:${CONFIG.DATABASE_PASSWORD}@${CONFIG.DATABASE_URL}:${CONFIG.DATABASE_PORT}/${CONFIG.DATABASE_DB}`, (err: MongoError, client: any) => {
+            MongoClient.connect(`mongodb://${CONFIG.DATABASE_USER}:${CONFIG.DATABASE_PASSWORD}@${CONFIG.DATABASE_URL}:${CONFIG.DATABASE_PORT}/${CONFIG.DATABASE_DB}`, (err: MongoError, client: MongoClient) => {
                 if (err) {
                     reject(err.message);
                     this.connected.next(false);
