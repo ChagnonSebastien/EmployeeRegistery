@@ -1,3 +1,5 @@
+import { ServerRequestService } from './server-request.service';
+import { AuthentificationService } from './authentification.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 
@@ -6,6 +8,7 @@ import { MDBSpinningPreloader } from 'ng-mdb-pro';
 
 import { AppComponent } from './app.component';
 import { RegisteryComponent } from './registery/registery.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -14,10 +17,13 @@ import { RegisteryComponent } from './registery/registery.component';
   ],
   imports: [
     BrowserModule,
-    MDBBootstrapModules.forRoot()
+    MDBBootstrapModules.forRoot(),
+    FormsModule
   ],
   providers: [
-    MDBSpinningPreloader
+    MDBSpinningPreloader,
+    AuthentificationService,
+    ServerRequestService
   ],
   bootstrap: [AppComponent],
   schemas: [ NO_ERRORS_SCHEMA ]

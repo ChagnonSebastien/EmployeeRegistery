@@ -11,18 +11,18 @@
 
                 <div class="md-form form-sm">
                     <i class="fa fa-envelope prefix"></i>
-                    <input mdbActive type="text" id="email" class="form-control">
+                    <input mdbActive type="text" id="email" class="form-control" [(ngModel)]='email'>
                     <label for="email">Email</label>
                 </div>
 
                 <div class="md-form form-sm">
                     <i class="fa fa-lock prefix"></i>
-                    <input mdbActive type="password" id="password" class="form-control">
+                    <input mdbActive type="password" id="password" class="form-control" [(ngModel)]='password'>
                     <label for="password">Mot de passe</label>
                 </div>
 
                 <div class="text-center mt-2">
-                    <button class="btn btn-info waves-light" mdbRippleRadius>Connection <i class="fa fa-sign-in ml-1"></i></button>
+                    <button class="btn btn-info waves-light" mdbRippleRadius (click)="connect()">Connection <i class="fa fa-sign-in ml-1"></i></button>
                 </div>
 
             </div>

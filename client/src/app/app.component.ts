@@ -1,3 +1,4 @@
+import { AuthentificationService } from './authentification.service';
 import { Component } from '@angular/core';
 
 @Component({
@@ -7,8 +8,18 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
 
-  public authenticated = false;
-  constructor() {
+  public email: string;
+  public password: string;
 
+  public authenticated = false;
+
+  constructor(private authentificationService: AuthentificationService) {
+
+  }
+
+  public connect(): void {
+    this.authentificationService
+    .authenticate(this.email, this.password)
+    .then((authenticated: boolean) => this.authenticated = authenticated);
   }
 }
