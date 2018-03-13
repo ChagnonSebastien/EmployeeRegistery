@@ -1,3 +1,29 @@
-<p>
-  registery works!
-</p>
+<div class="row">
+  <div class="col col-lg-4 col-12 list-holder">
+    <div class="card card-cascade narrower grey lighten-2">
+
+      <div class="view card-header text-white capn-color">
+        <p class="text-center h4">Employés</p>
+        <div class="md-form">
+          <input mdbActive placeholder="Chercher par mot-clé" type="search" name="search" id="search" class="form-control text-white" [(ngModel)]='keyWord' (keyup)="keyUp()">
+        </div>
+        <div class="form-group" style="margin-bottom: 0">
+            <input mdbDeepDirective type="checkbox" id="activeClient" [(ngModel)]='activeClient'>
+            <label for="activeClient">Actifs seulement</label>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="scrollable">
+          <div *ngFor="let employee of filteredEmployees; let i = index">
+            <a (click)="selectEmployee(employee._id)" [ngClass]="{'bold': currentlySelectedEmployee == employee._id}">{{employee.firstName}} {{employee.lastName}}</a>
+            <hr>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col col-lg-8 col-12 content">
+      <router-outlet></router-outlet>
+  </div>
+</div>

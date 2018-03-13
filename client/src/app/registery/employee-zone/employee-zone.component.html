@@ -1,0 +1,26 @@
+<div class="card card-cascade narrower grey lighten-2">
+
+    <div class="view card-header capn-color tab-container">
+        <div class="row">
+            <a
+                class="tab-item waves-light text-center text-white"
+                mdbRippleRadius
+                routerLinkActive="active"
+                [routerLink]="['infos']">
+                <i class='fa fa-user'></i><br>Infos
+            </a>
+            <a
+                class="tab-item waves-light text-center text-white"
+                mdbRippleRadius
+                routerLinkActive="active"
+                [routerLink]="['salaries']">
+                <i class='fa fa-dollar'></i><br>Salaires
+            </a>
+        </div>
+    </div>
+    
+    <div class="card-body text-center">
+        <router-outlet></router-outlet>
+    </div>
+
+</div>

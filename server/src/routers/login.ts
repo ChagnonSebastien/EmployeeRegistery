@@ -14,22 +14,23 @@ router.post('/', (req: Request, res: Response, next: NextFunction) => {
         database.connection.collection('users')
         .findOne({ "_id": req.body.email })
         .then((user: any) => {
-
             compare(req.body.password, user.password)
             .then((match: boolean) => {
-
                 if (match) {
-
-                    const token = sign( user.permissions, KeyManager.instance.getKey(), { expiresIn: '4h' });
-                    res.send({ token });
-
+                    database.connection.collection('employees')
+                    .findOne({ "_id": user.employeeID })
+                    .then((employee: any) => {
+                        database.connection.collection('employeeTypes')
+                        .findOne({ "_id": employee.employeeType })
+                        .then((employeeType: any) => {
+                            employeeType.employeeID = user.employeeID;
+                            const token = sign( employeeType, KeyManager.instance.getKey(), { expiresIn: '4h' });
+                            res.send({ token });
+                        })
+                    })
                 } else res.status(404).end();
-
             });
-
-        })
-        .catch(reason => res.status(404).end());
-
+        });
     })
     .catch(reason => res.status(404).end());
 

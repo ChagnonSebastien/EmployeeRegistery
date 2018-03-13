@@ -19,7 +19,7 @@ export class AppComponent {
 
   public connect(): void {
     this.authentificationService
-    .authenticate(this.email, this.password)
+    .authenticate(this.email.trim(), this.password)
     .then((authenticated: boolean) => this.authenticated = authenticated);
   }
 }

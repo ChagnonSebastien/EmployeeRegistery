@@ -1,0 +1,118 @@
+<div *ngIf="true">
+  <div class="row">
+    <div class="col col-sm-3 col-4">
+      <div class="md-form form-group">
+        <input mdbActive type="text" class="form-control" id="_id" [(ngModel)]="employee._id" disabled>
+        <label for="_id">Code</label>
+      </div>
+    </div>
+    <div class="col col-sm-9 col-8">
+      <div class="md-form form-group">
+        <mdb-select [options]="optionsSelect" placeholder="Choisir une option" [(ngModel)]="employee.employeeType" id="employeeType" [disabled]="!employee.canEdit"></mdb-select>
+        <label for="employeeType" class="active" [ngClass]="{'disabled': !employee.canEdit}">Type d'employé</label>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-sm-6 col-12">
+      <div class="md-form form-group">
+        <input mdbActive type="text" class="form-control" id="firstName" [(ngModel)]="employee.firstName" [disabled]="!employee.canEdit">
+        <label for="firstName" [ngClass]="{'disabled': !employee.canEdit}">Prénom</label>
+      </div>
+    </div>
+    <div class="col col-sm-6 col-12">
+      <div class="md-form form-group">
+        <input mdbActive type="text" class="form-control" id="lastName" [(ngModel)]="employee.lastName" [disabled]="!employee.canEdit">
+        <label for="lastName" [ngClass]="{'disabled': !employee.canEdit}">Nom de Famille</label>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-12">
+      <div class="md-form form-group">
+        <input mdbActive type="text" class="form-control" id="email" [(ngModel)]="employee.email" [disabled]="!employee.canEdit">
+        <label for="email" [ngClass]="{'disabled': !employee.canEdit}">Email</label>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-sm-8 col-12">
+      <div class="md-form form-group">
+        <input mdbActive type="text" class="form-control" id="adress" [(ngModel)]="employee.adress" [disabled]="!employee.canEdit">
+        <label for="adress" [ngClass]="{'disabled': !employee.canEdit}">Adresse</label>
+      </div>
+    </div>
+    <div class="col col-sm-4 col-6">
+      <div class="md-form form-group">
+        <input mdbActive type="text" class="form-control" id="postalCode" [(ngModel)]="employee.postalCode" [disabled]="!employee.canEdit">
+        <label for="postalCode" [ngClass]="{'disabled': !employee.canEdit}">Code Postal</label>
+      </div>
+    </div>
+    <div class="col col-sm-4 col-6">
+      <div class="md-form form-group">
+        <input mdbActive type="text" class="form-control" id="city" [(ngModel)]="employee.city" [disabled]="!employee.canEdit">
+        <label for="city" [ngClass]="{'disabled': !employee.canEdit}">Ville</label>
+      </div>
+    </div>
+    <div class="col col-sm-4 col-6">
+      <div class="md-form form-group">
+        <input mdbActive type="text" class="form-control" id="province" [(ngModel)]="employee.province" [disabled]="!employee.canEdit">
+        <label for="province" [ngClass]="{'disabled': !employee.canEdit}">Province</label>
+      </div>
+    </div>
+    <div class="col col-sm-4 col-6">
+      <div class="md-form form-group">
+        <input mdbActive type="text" class="form-control" id="country" [(ngModel)]="employee.country" [disabled]="!employee.canEdit">
+        <label for="country" [ngClass]="{'disabled': !employee.canEdit}">Pays</label>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-6">
+      <div class="md-form form-group">
+        <input mdbActive type="text" class="form-control" id="homePhone" [(ngModel)]="employee.homePhone" [disabled]="!employee.canEdit">
+        <label for="homePhone" [ngClass]="{'disabled': !employee.canEdit}">Tél. Maison</label>
+      </div>
+    </div>
+    <div class="col col-6">
+      <div class="md-form form-group">
+        <input mdbActive type="text" class="form-control" id="cellPhone" [(ngModel)]="employee.cellPhone" [disabled]="!employee.canEdit">
+        <label for="cellPhone" [ngClass]="{'disabled': !employee.canEdit}">Cellulaire</label>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+      <div class="col col-6">
+      <div class="md-form form-group" style="margin-bottom: 0">
+        <mdb-date-picker [options]="myDatePickerOptions" [(ngModel)]="employee.birthDate" [disabled]="!employee.canEdit"></mdb-date-picker>
+        <label for="birthDate" class="active" [ngClass]="{'disabled': !employee.canEdit}">Date de naissance</label>
+      </div>
+    </div>
+    <div class="col col-6">
+      <div class="md-form form-group" style="margin-bottom: 0">
+        <mdb-date-picker [options]="myDatePickerOptions" [(ngModel)]="employee.hiringDate" [disabled]="!employee.canEdit"></mdb-date-picker>
+        <label for="hiringDate" class="active" [ngClass]="{'disabled': !employee.canEdit}">Date d'embauche</label>
+      </div>
+    </div>
+  </div>
+  <div class="row text-left">
+      <div class="col col-6">
+      <div class="md-form form-group">
+        <i class="fa fa-eye prefix" (click)="toogleVisibility()"></i>
+        <input mdbActive type="password" class="form-control" id="nas" [(ngModel)]="employee.nas" #nasField [disabled]="!employee.canEdit">
+        <label for="nas" [ngClass]="{'disabled': !employee.canEdit}">NAS</label>
+      </div>
+    </div>
+    <div class="col col-6">
+      <div class="md-form form-group">
+        <input mdbDeepDirective type="checkbox" id="fullTimeStudent" [(ngModel)]="employee.fullTimeStudent" [disabled]="!employee.canEdit">
+        <label for="fullTimeStudent" [ngClass]="{'disabled': !employee.canEdit}">Étudiant temps plein</label>
+      </div>
+    </div>
+  </div>
+  <div class="row justify-content-right text-right">
+    <div class="col">
+      <button class="btn capn-color" (click)="save()" *ngIf="employee.canEdit">Sauvegarder</button>
+    </div>
+  </div>
+</div>

@@ -62,4 +62,6 @@ function config(app: Express): void {
 }
 
 function routes(app: Express): void {
+    const employees = require('./routers/employees');
+    app.use('/employees', employees);
 }
