@@ -13,12 +13,31 @@ router.get('/', (req: Request, res: Response, next: NextFunction) => {
             const body: any[] = [];
             for (var i = 0; i < employees.length; i++) {
                 if (req.body.perms.isSuperior[employees[i].employeeType] || req.body.perms.employeeID === employees[i]._id) {
-                    employees[i].canEdit = req.body.perms.isSuperior[employees[i].employeeType];
-                    body.push(employees[i]);
+                    body.push({_id: employees[i]._id, firstName: employees[i].firstName, lastName: employees[i].lastName, active: employees[i].active});
                 }
             }
             res.send(body);
-        });
+        })
+        .catch(reason => res.status(404).end());
+    })
+    .catch(reason => res.status(404).end());
+
+});
+
+router.get('/:id', (req: Request, res: Response, next: NextFunction) => {
+    Database.getInstance()
+    .then((database: Database) => {
+        database.connection.collection('employees')
+        .findOne({_id: Number(req.params.id)})
+        .then(employee => {
+            if (req.body.perms.isSuperior[employee.employeeType] || req.body.perms.employeeID === employee._id) {
+                employee.canEdit = req.body.perms.isSuperior[employee.employeeType];
+                res.send(employee);
+            } else {
+                res.status(403).end();
+            }
+        })
+        .catch(reason => res.status(404).end());
     })
     .catch(reason => res.status(404).end());
 
@@ -36,26 +55,11 @@ router.post('/:id', (req: Request, res: Response, next: NextFunction) => {
 
             delete req.body.perms;
             database.connection.collection('employees')
-            .findOneAndReplace({_id: Number(req.params.id)}, req.body)
+            .findOneAndUpdate({_id: Number(req.params.id)}, req.body)
             .then(employee => res.end())
-        });
-    })
-    .catch(reason => res.status(404).end());
-
-});
-
-router.get('/types', (req: Request, res: Response, next: NextFunction) => {
-
-    Database.getInstance()
-    .then((database: Database) => {
-        database.connection.collection('employeeTypes')
-        .find().toArray()
-        .then((types: any[]) => {
-            res.send(types.map((type: any) => {
-                type.isSuperior = req.body.perms.isSuperior[type._id];
-                return type;
-            }));
-        });
+            .catch(reason => res.status(404).end());
+        })
+        .catch(reason => res.status(404).end());
     })
     .catch(reason => res.status(404).end());
 

@@ -1,9 +1,13 @@
+import { Subscription } from 'rxjs/Subscription';
+import { AuthentificationService } from './../../../authentification.service';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ServerRequestService } from './../../../server-request.service';
 import { EmployeeService } from './../../employee-select.service';
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Employee } from '../../employee';
 import { InputDecorator } from '@angular/core/src/metadata/directives';
 import { IMyOptions, MDBDatePickerComponent } from 'ng-mdb-pro/pro';
+import { ToastService } from 'ng-mdb-pro/pro/alerts';
 
 @Component({
   selector: 'app-employee-info',
@@ -14,6 +18,8 @@ export class EmployeeInfoComponent implements OnInit {
 
   public optionsSelect: Array<any>;
   public employee: Employee;
+
+  private listUpdateListener: Subscription;
 
   public myDatePickerOptions: IMyOptions = {
     dayLabels: {su: 'Dim', mo: 'Lun', tu: 'Mar', we: 'Mer', th: 'Jeu', fr: 'Ven', sa: 'Sam'},
@@ -37,23 +43,37 @@ export class EmployeeInfoComponent implements OnInit {
 
   @ViewChild('nasField') public nasField: ElementRef;
 
-  constructor(private employeeService: EmployeeService, private serverRequestService: ServerRequestService) {
+  constructor(
+    private employeeService: EmployeeService,
+    private serverRequestService: ServerRequestService,
+    private toastrService: ToastService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private authenticationService: AuthentificationService
+  ) {
     this.optionsSelect = [{value: 0}, {value: 1}, {value: 2}, {value: 3}, {value: 4}, {value: 5}];
   }
 
   ngOnInit() {
-    this.employeeService.getSelectedObservable().subscribe((employee: Employee) => {
-      this.employee = employee;
-    });
+    this.employeeService.getSelectedObservable().subscribe((employee: Employee) => this.employee = employee);
 
     this.serverRequestService
-    .get('/employees/types')
+    .get('/employeetypes')
     .then(res => {
       this.optionsSelect = res.json().map((type: any) => {
         return {value: type._id, label: type.name, disabled: !type.isSuperior && type._id !== this.employee.employeeType};
       });
     })
-    .catch(err => this.optionsSelect = []);
+    .catch(err => {
+      if (err.status === 401) {
+        this.toastrService.warning('Session expirée');
+        this.authenticationService.expire();
+      } else {
+        this.toastrService.error('Erreur lors de la requête vers le serveur');
+        this.router.navigate(['.'], {relativeTo: this.route.parent.parent});
+      }
+
+    });
   }
 
   public toogleVisibility(): void {
@@ -67,8 +87,19 @@ export class EmployeeInfoComponent implements OnInit {
   public save(): void {
     this.serverRequestService
     .post('/employees/' + this.employee._id, this.employee)
-    .then(res => console.log(res))
-    .catch(err => console.log(err));
+    .then(res => {
+      this.toastrService.success('Succès');
+      this.employeeService.updateEmployee(this.employee);
+    })
+    .catch(err => {
+      if (err.status === 401) {
+        this.toastrService.warning('Session expirée');
+        this.authenticationService.expire();
+      } else {
+        this.toastrService.error('Tu n\'a pas la permission de faire cela');
+      }
+    });
+
   }
 
 }

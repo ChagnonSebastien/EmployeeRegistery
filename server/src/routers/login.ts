@@ -27,10 +27,14 @@ router.post('/', (req: Request, res: Response, next: NextFunction) => {
                             const token = sign( employeeType, KeyManager.instance.getKey(), { expiresIn: '4h' });
                             res.send({ token });
                         })
+                        .catch(reason => res.status(404).end())
                     })
+                    .catch(reason => res.status(404).end())
                 } else res.status(404).end();
-            });
-        });
+            })
+            .catch(reason => res.status(404).end());
+        })
+        .catch(reason => res.status(404).end());
     })
     .catch(reason => res.status(404).end());
 

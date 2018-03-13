@@ -4,6 +4,7 @@ import { ServerRequestService } from './server-request.service';
 import { AuthentificationService } from './authentification.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MDBBootstrapModules } from 'ng-mdb-pro';
 import { MDBSpinningPreloader } from 'ng-mdb-pro';
@@ -15,6 +16,7 @@ import { EmployeeZoneComponent } from './registery/employee-zone/employee-zone.c
 import { AppRoutingModule } from './routing.module';
 import { EmployeeSalaryComponent } from './registery/employee-zone/employee-salary/employee-salary.component';
 import { EmployeeInfoComponent } from './registery/employee-zone/employee-info/employee-info.component';
+import { ToastModule } from 'ng-mdb-pro/pro/alerts';
 
 @NgModule({
   declarations: [
@@ -27,8 +29,10 @@ import { EmployeeInfoComponent } from './registery/employee-zone/employee-info/e
   imports: [
     BrowserModule,
     MDBBootstrapModules.forRoot(),
+    ToastModule.forRoot(),
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule
   ],
   providers: [
     MDBSpinningPreloader,

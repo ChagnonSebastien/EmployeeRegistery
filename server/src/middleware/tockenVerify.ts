@@ -7,11 +7,11 @@ export const tokenVerify = (req: Request, res: Response, next: NextFunction) => 
 
     if (token) {
         verify(token, KeyManager.instance.getKey(), (err : JsonWebTokenError | NotBeforeError | TokenExpiredError, decoded: object | string) => {
-            if (err) res.status(403).end();
+            if (err) res.status(401).end();
             else {
                 req.body.perms = decoded;
                 next();  
             } 
         });
-    } else res.status(403).end();
+    } else res.status(401).end();
 }

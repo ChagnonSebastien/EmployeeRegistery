@@ -13,11 +13,12 @@ import { Subscription } from 'rxjs/Subscription';
 })
 export class RegisteryComponent implements OnInit, OnDestroy {
   public keyWord: string;
-  public activeClient: boolean;
+  public activeOnly: boolean;
   public filteredEmployees: Employee[];
 
   public currentlySelectedEmployee: Number;
   private idSubscription: Subscription;
+  private listUpdateSubscription: Subscription;
 
   constructor(
     private serverRequestService: ServerRequestService,
@@ -25,7 +26,7 @@ export class RegisteryComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private employeeSelectService: EmployeeService
   ) {
-    this.activeClient = true;
+    this.activeOnly = true;
     this.keyWord = '';
   }
 
@@ -33,9 +34,10 @@ export class RegisteryComponent implements OnInit, OnDestroy {
     this.employeeSelectService.fetchEmployees()
     .then((employees: Employee[]) => {
       this.filterEmployees(employees);
-      this.employeeSelectService.reloadSelected();
     })
     .catch(err => console.log(err));
+
+    this.listUpdateSubscription = this.employeeSelectService.getListUpdatedObservable().subscribe(() => this.refilter());
 
     this.idSubscription = this.employeeSelectService.getSelectedObservable().subscribe((employee: Employee) => {
       if (employee) {
@@ -46,6 +48,7 @@ export class RegisteryComponent implements OnInit, OnDestroy {
 
   public ngOnDestroy() {
     this.idSubscription.unsubscribe();
+    this.listUpdateSubscription.unsubscribe();
   }
 
   public selectEmployee(_id: Number) {
@@ -54,7 +57,7 @@ export class RegisteryComponent implements OnInit, OnDestroy {
 
   private filterEmployees(employees: Employee[]): void {
     this.filteredEmployees = employees.filter((employee: Employee) => {
-      if (this.activeClient && !employee.active) {
+      if (this.activeOnly && !employee.active) {
         return false;
       }
 
@@ -67,7 +70,7 @@ export class RegisteryComponent implements OnInit, OnDestroy {
     });
   }
 
-  public keyUp() {
+  public refilter() {
     this.employeeSelectService.fetchEmployees()
     .then((employees: Employee[]) => {
       this.filterEmployees(employees);

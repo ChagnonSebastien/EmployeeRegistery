@@ -96,7 +96,7 @@
     </div>
   </div>
   <div class="row text-left">
-      <div class="col col-6">
+    <div class="col col-6">
       <div class="md-form form-group">
         <i class="fa fa-eye prefix" (click)="toogleVisibility()"></i>
         <input mdbActive type="password" class="form-control" id="nas" [(ngModel)]="employee.nas" #nasField [disabled]="!employee.canEdit">
@@ -110,8 +110,14 @@
       </div>
     </div>
   </div>
-  <div class="row justify-content-right text-right">
-    <div class="col">
+  <div class="row">
+    <div class="col col-6">
+      <div class="md-form form-group text-left">
+        <input mdbDeepDirective type="checkbox" id="active" [(ngModel)]="employee.active" [disabled]="!employee.canEdit">
+        <label for="active" [ngClass]="{'disabled': !employee.canEdit}">Employé Actif</label>
+      </div>
+    </div>
+    <div class="col col-6 text-right">
       <button class="btn capn-color" (click)="save()" *ngIf="employee.canEdit">Sauvegarder</button>
     </div>
   </div>

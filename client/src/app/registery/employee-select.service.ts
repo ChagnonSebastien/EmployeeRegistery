@@ -1,3 +1,6 @@
+import { Subject } from 'rxjs/Subject';
+import { AuthentificationService } from './../authentification.service';
+import { ToastService } from 'ng-mdb-pro/pro/alerts';
 import { json } from 'body-parser';
 import { ServerRequestService } from './../server-request.service';
 import { Employee } from './employee';
@@ -11,9 +14,20 @@ export class EmployeeService {
   private employeeList: Employee[];
   private subject: BehaviorSubject<Employee>;
 
-  constructor(private serverRequestService: ServerRequestService) {
+  private listUpdatad: Subject<void>;
+
+  constructor(
+    private serverRequestService: ServerRequestService,
+    private toastrService: ToastService,
+    private authenticationService: AuthentificationService
+  ) {
     this.subject = new BehaviorSubject<Employee>(new Employee(-1));
+    this.listUpdatad = new Subject<void>();
     this.employeeList = [];
+  }
+
+  public getListUpdatedObservable(): Observable<void> {
+    return this.listUpdatad.asObservable();
   }
 
   public getSelectedObservable(): Observable<Employee> {
@@ -21,19 +35,24 @@ export class EmployeeService {
   }
 
   public updateSelected(_id: Number): void {
-    this.subject.next(this.findEmployee(_id));
+    this.serverRequestService.get('/employees/' + _id)
+    .then(res => this.subject.next(res.json()))
+    .catch(err => {
+      if (err.status === 401) {
+        this.toastrService.warning('Session expirée');
+        this.authenticationService.expire();
+      } else {
+        this.toastrService.error('Erreur lors du téléchargement de l\'employé ' + _id + '.');
+        this.subject.next(new Employee(_id));
+      }
+    });
   }
 
-  private findEmployee(_id: Number): Employee {
-    const found = this.employeeList.find((employee: Employee) => {
-      return employee._id === _id;
+  public updateEmployee(employee: Employee): void {
+    this.employeeList = this.employeeList.map((e: Employee) => {
+      return e._id === employee._id ? JSON.parse(JSON.stringify(employee)) : e;
     });
-
-    if (found) {
-      return found;
-    } else {
-      return new Employee(_id);
-    }
+    this.listUpdatad.next();
   }
 
   public fetchEmployees(): Promise<Employee[]> {
@@ -49,11 +68,15 @@ export class EmployeeService {
         });
         resolve(this.employeeList);
       })
-      .catch(err => resolve([]));
+      .catch(err => {
+        if (err.status === 401) {
+          this.toastrService.warning('Session expirée');
+          this.authenticationService.expire();
+        } else {
+          this.toastrService.error('Erreur lors du téléchargement des employés.');
+          resolve([]);
+        }
+      });
     });
-  }
-
-  public reloadSelected() {
-    this.subject.next(this.findEmployee(this.subject.value._id));
   }
 }
