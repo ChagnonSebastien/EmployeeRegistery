@@ -1,3 +1,4 @@
+import { EmployeeTypeService } from './../../employee-type.service';
 import { Subscription } from 'rxjs/Subscription';
 import { AuthentificationService } from './../../../authentification.service';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -49,7 +50,8 @@ export class EmployeeInfoComponent implements OnInit {
     private toastrService: ToastService,
     private router: Router,
     private route: ActivatedRoute,
-    private authenticationService: AuthentificationService
+    private authenticationService: AuthentificationService,
+    private employeeTypeService: EmployeeTypeService
   ) {
     this.optionsSelect = [{value: 0}, {value: 1}, {value: 2}, {value: 3}, {value: 4}, {value: 5}];
   }
@@ -57,22 +59,11 @@ export class EmployeeInfoComponent implements OnInit {
   ngOnInit() {
     this.employeeService.getSelectedObservable().subscribe((employee: Employee) => this.employee = employee);
 
-    this.serverRequestService
-    .get('/employeetypes')
-    .then(res => {
-      this.optionsSelect = res.json().map((type: any) => {
-        return {value: type._id, label: type.name, disabled: !type.isSuperior && type._id !== this.employee.employeeType};
-      });
-    })
+    this.employeeTypeService.fetchEmployeeTypes()
+    .then(res => this.optionsSelect = res)
     .catch(err => {
-      if (err.status === 401) {
-        this.toastrService.warning('Session expirée');
-        this.authenticationService.expire();
-      } else {
-        this.toastrService.error('Erreur lors de la requête vers le serveur');
-        this.router.navigate(['.'], {relativeTo: this.route.parent.parent});
-      }
-
+      this.toastrService.error('Erreur lors de la requête vers le serveur');
+      this.router.navigate(['.'], {relativeTo: this.route.parent.parent});
     });
   }
 

@@ -14,7 +14,7 @@ export class EmployeeService {
   private employeeList: Employee[];
   private subject: BehaviorSubject<Employee>;
 
-  private listUpdatad: Subject<void>;
+  private listUpdatad: Subject<Employee[]>;
 
   constructor(
     private serverRequestService: ServerRequestService,
@@ -22,11 +22,11 @@ export class EmployeeService {
     private authenticationService: AuthentificationService
   ) {
     this.subject = new BehaviorSubject<Employee>(new Employee(-1));
-    this.listUpdatad = new Subject<void>();
+    this.listUpdatad = new Subject<Employee[]>();
     this.employeeList = [];
   }
 
-  public getListUpdatedObservable(): Observable<void> {
+  public getListUpdatedObservable(): Observable<Employee[]> {
     return this.listUpdatad.asObservable();
   }
 
@@ -49,23 +49,31 @@ export class EmployeeService {
   }
 
   public updateEmployee(employee: Employee): void {
-    this.employeeList = this.employeeList.map((e: Employee) => {
-      return e._id === employee._id ? JSON.parse(JSON.stringify(employee)) : e;
-    });
-    this.listUpdatad.next();
+    let found = false;
+    for (let i = 0; i < this.employeeList.length || found; i++) {
+      if (this.employeeList[i]._id === employee._id) {
+        this.employeeList.splice(i, 1, employee);
+        found = true;
+      } else if (this.employeeList[i]._id > employee._id) {
+        this.employeeList.splice(i, 0, employee);
+        found = true;
+      }
+    }
+    if (!found) {
+      this.employeeList.push(employee);
+    }
+
+    this.listUpdatad.next(this.employeeList);
   }
 
-  public fetchEmployees(): Promise<Employee[]> {
+  public downloadEmployees(): Promise<Employee[]> {
     return new Promise<Employee[]>((resolve, reject) => {
-      if (this.employeeList.length > 0) {
-        resolve(this.employeeList);
-      }
-
       this.serverRequestService.get('/employees')
       .then(res => {
         this.employeeList = res.json().sort((e1, e2) => {
           return e1._id > e2._id;
         });
+        this.listUpdatad.next(this.employeeList);
         resolve(this.employeeList);
       })
       .catch(err => {
@@ -74,9 +82,22 @@ export class EmployeeService {
           this.authenticationService.expire();
         } else {
           this.toastrService.error('Erreur lors du téléchargement des employés.');
+          this.employeeList = [];
           resolve([]);
         }
       });
+    });
+  }
+
+  public fetchEmployees(): Promise<Employee[]> {
+    return new Promise<Employee[]>((resolve, reject) => {
+      if (this.employeeList.length > 0) {
+        resolve(this.employeeList);
+      }
+
+      this.downloadEmployees()
+      .then((res: Employee[]) => resolve(res))
+      .catch(err => console.log(err));
     });
   }
 }

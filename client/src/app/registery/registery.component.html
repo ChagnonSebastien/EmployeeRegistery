@@ -1,29 +1,89 @@
 <div class="row">
   <div class="col col-lg-4 col-12 list-holder">
-    <div class="card card-cascade narrower grey lighten-2">
+    <div class="row">
+      <div class="card card-cascade narrower grey lighten-2">
 
-      <div class="view card-header text-white capn-color">
-        <p class="text-center h4">Employés</p>
-        <div class="md-form">
-          <input mdbActive placeholder="Chercher par mot-clé" type="search" name="search" id="search" class="form-control text-white" [(ngModel)]="keyWord" (keyup)="refilter()">
-        </div>
-        <div class="form-group" style="margin-bottom: 0">
-            <input mdbDeepDirective type="checkbox" id="activeOnly" [(ngModel)]='activeOnly' (change)="refilter()">
-            <label for="activeOnly">Actifs seulement</label>
-        </div>
-      </div>
-
-      <div class="card-body">
-        <div class="scrollable">
-          <div *ngFor="let employee of filteredEmployees; let i = index">
-            <a (click)="selectEmployee(employee._id)" [ngClass]="{'bold': currentlySelectedEmployee == employee._id}">{{employee.firstName}} {{employee.lastName}}</a>
-            <hr>
+        <div class="view card-header text-white capn-color">
+          <p class="text-center h4">Employés</p>
+          <div class="md-form">
+            <input mdbActive placeholder="Chercher par mot-clé" type="search" name="search" id="search" class="form-control text-white" [(ngModel)]="keyWord" (keyup)="refilter()">
+          </div>
+          <div class="form-group" style="margin-bottom: 0">
+              <input mdbDeepDirective type="checkbox" id="activeOnly" [(ngModel)]='activeOnly' (change)="refilter()">
+              <label for="activeOnly">Actifs seulement</label>
           </div>
         </div>
+
+        <div class="card-body">
+          <div class="scrollable">
+            <div *ngFor="let employee of filteredEmployees; let i = index">
+              <a (click)="selectEmployee(employee._id)" [ngClass]="{'bold': currentlySelectedEmployee == employee._id}">{{employee.firstName}} {{employee.lastName}}</a>
+              <hr>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col col-12">
+        <br>
+        <button class="btn btn-block capn-color text-white" (click)="newEmployeeForm.show();generateNextEmployee();">Nouvel Employé</button>
       </div>
     </div>
   </div>
   <div class="col col-lg-8 col-12 content">
       <router-outlet></router-outlet>
+  </div>
+</div>
+
+<div mdbModal #newEmployeeForm="mdb-modal" class="modal fade" id="modalContactForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog cascading-modal" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header capn-color white-text">
+        <h4 class="title"><i class="fa fa-user"></i> Nouvel Employé</h4>
+        <button type="button" class="close waves-effect waves-light" data-dismiss="modal" aria-label="Close" (click)="newEmployeeForm.hide()">
+            <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      
+      
+      <div class="modal-body mb-0">
+
+        <div class="row">
+          <div class="col col-3">
+            <div class="md-form form-sm">
+              <input mdbActive type="text" id="newId" class="form-control" #newId [(ngModel)]="newEmployee._id">
+              <label for="newId">Code</label>
+            </div>
+          </div>
+          <div class="col col-9">
+            <mdb-select [options]="optionsSelect" placeholder="Type d'employé" [(ngModel)]="newEmployee.employeeType" id="newEmployeeType"></mdb-select>
+            <label for="newEmployeeType" class="active">Type d'employé</label>
+          </div>
+        </div>
+
+        <div class="md-form form-sm">
+          <input mdbActive type="text" id="newFirstName" class="form-control" #newFirstName [(ngModel)]="newEmployee.firstName">
+          <label for="newFirstName">Prénom</label>
+        </div>
+
+        <div class="md-form form-sm">
+          <input mdbActive type="text" id="newLastName" class="form-control" #newLastName [(ngModel)]="newEmployee.lastName">
+          <label for="newLastName">Nom de famille</label>
+        </div>
+
+        <div class="text-center mt-1-half">
+          <button
+            class="btn capn-color mb-2 waves-light"
+            mdbRippleRadius
+            (click)="createNewEmployee()">
+            Créer <i class="fa fa-pencil ml-1"></i>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
   </div>
 </div>

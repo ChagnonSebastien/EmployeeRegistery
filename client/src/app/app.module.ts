@@ -1,3 +1,4 @@
+import { EmployeeTypeService } from './registery/employee-type.service';
 import { EmployeeService } from './registery/employee-select.service';
 import { ActivatedRoute } from '@angular/router';
 import { ServerRequestService } from './server-request.service';
@@ -38,7 +39,8 @@ import { ToastModule } from 'ng-mdb-pro/pro/alerts';
     MDBSpinningPreloader,
     AuthentificationService,
     ServerRequestService,
-    EmployeeService
+    EmployeeService,
+    EmployeeTypeService
   ],
   bootstrap: [AppComponent],
   schemas: [ NO_ERRORS_SCHEMA ]
